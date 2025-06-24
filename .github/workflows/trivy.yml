@@ -1,9 +1,9 @@
 name: Trivy Security Scan
 
-on:
-  push:
-    branches: [main]
-  pull_request:
+ on:
+   push:
+     branches: [main]
+   pull_request:
 
 jobs:
   trivy:
@@ -36,8 +36,11 @@ jobs:
           ignore-unfixed: true
           exit-code: '0'  # Do not fail yet
 
+      - name: list the directory
+        run: ls -lah .          
+
       - name: Cat the file to see format
-        run: cat trivy-results.sarif
+        run: cat trivy-report.json
 
 #      - name: Upload Trivy Report
 #        uses: github/codeql-action/upload-sarif@v3
