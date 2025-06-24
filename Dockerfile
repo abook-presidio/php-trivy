@@ -8,7 +8,7 @@ WORKDIR /var/www/html
 COPY php/index.php php/vulnerable-lib.php ./
 
 # Copy custom Apache config
-COPY apache/httpd.conf /etc/apache2/conf-enabled/httpd.conf
+COPY httpd.conf /etc/apache2/conf-enabled/httpd.conf
 
 # Enable necessary Apache modules
 RUN a2enmod rewrite
