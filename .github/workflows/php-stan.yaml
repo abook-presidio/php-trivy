@@ -1,20 +1,24 @@
-name: php-stan
+name: PHPStan Static Analysis
 
 on:
   push:
-    branches: [ "main" ]
-permissions:
-  contents: read
+    branches: [main]
+  pull_request:
 
 jobs:
   phpstan:
+    name: Run PHPStan Static Analysis
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: php-actions/composer@v6
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: PHPStan Static Analysis
-        uses: php-actions/phpstan@v3
-        with:
-          path: php/ 
+      - name: Download PHPStan PHAR
+        run: |
+          curl -Ls -o phpstan.phar https://github.com/phpstan/phpstan/releases/latest/download/phpstan.phar
+          chmod +x phpstan.phar
 
+      - name: Run PHPStan on /php directory
+        run: |
+          ./phpstan.phar analyse /php --level=5
