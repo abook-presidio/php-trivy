@@ -1,0 +1,64 @@
+name: Trivy Security Scan
+
+on:
+  workflow_call:
+#   push:
+#     branches: [main]
+#   pull_request:
+
+jobs:
+  trivy:
+    name: Trivy Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Trivy and save report
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          format: json
+          output: trivy-report.json
+          ignore-unfixed: true
+          exit-code: '0'  # Do not fail yet
+
+      - name: Run Trivy and save report
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          format: 'template'
+          output: trivy-results.sarif
+          ignore-unfixed: true
+          exit-code: '0'  # Do not fail yet
+
+      - name: list the directory
+        run: ls -lah .          
+
+      - name: Cat the file to see format
+        run: cat trivy-report.json
+
+#      - name: Upload Trivy Report
+#        uses: github/codeql-action/upload-sarif@v3
+#        with:
+#          sarif_file: 'trivy-results.sarif'
+
+      - name: Fail job if HIGH or CRITICAL vulnerabilities are found
+        run: |
+          CRITICAL=$(jq '[.Results[].Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' trivy-report.json)
+          HIGH=$(jq '[.Results[].Vulnerabilities[]? | select(.Severity == "HIGH")] | length' trivy-report.json)
+          
+          echo "Found $CRITICAL CRITICAL and $HIGH HIGH vulnerabilities"
+          
+          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+            echo "❌ Vulnerabilities of HIGH or CRITICAL severity found"
+            exit 1
+          else
+            echo "✅ No HIGH or CRITICAL vulnerabilities found"
+          fi
+

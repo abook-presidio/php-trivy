@@ -1,64 +1,52 @@
-name: Trivy Security Scan
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: trivy
 
 on:
   workflow_call:
+# on:
 #   push:
-#     branches: [main]
+#     branches: [ "main" ]
 #   pull_request:
+#     # The branches below must be a subset of the branches above
+#     branches: [ "main" ]
+#   schedule:
+#     - cron: '20 0 * * 3'
+
+permissions:
+  contents: read
 
 jobs:
-  trivy:
-    name: Trivy Vulnerability Scan
+  build:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Run Trivy and save report
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: .
-          severity: HIGH,CRITICAL
-          format: json
-          output: trivy-report.json
-          ignore-unfixed: true
-          exit-code: '0'  # Do not fail yet
-
-      - name: Run Trivy and save report
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: .
-          severity: HIGH,CRITICAL
-          format: 'template'
-          output: trivy-results.sarif
-          ignore-unfixed: true
-          exit-code: '0'  # Do not fail yet
-
-      - name: list the directory
-        run: ls -lah .          
-
-      - name: Cat the file to see format
-        run: cat trivy-report.json
-
-#      - name: Upload Trivy Report
-#        uses: github/codeql-action/upload-sarif@v3
-#        with:
-#          sarif_file: 'trivy-results.sarif'
-
-      - name: Fail job if HIGH or CRITICAL vulnerabilities are found
+      - name: Build an image from Dockerfile
         run: |
-          CRITICAL=$(jq '[.Results[].Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' trivy-report.json)
-          HIGH=$(jq '[.Results[].Vulnerabilities[]? | select(.Severity == "HIGH")] | length' trivy-report.json)
-          
-          echo "Found $CRITICAL CRITICAL and $HIGH HIGH vulnerabilities"
-          
-          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
-            echo "❌ Vulnerabilities of HIGH or CRITICAL severity found"
-            exit 1
-          else
-            echo "✅ No HIGH or CRITICAL vulnerabilities found"
-          fi
+          docker build -t docker.io/abook-presidio/php-trivy:${{ github.sha }} .
 
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          image-ref: 'docker.io/abook-presidio/php-trivy:${{ github.sha }}'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
