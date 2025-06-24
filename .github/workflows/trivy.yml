@@ -36,6 +36,9 @@ jobs:
           ignore-unfixed: true
           exit-code: '0'  # Do not fail yet
 
+      - name: Cat the file to see format
+        run: cat trivy-results.sarif
+
 #      - name: Upload Trivy Report
 #        uses: github/codeql-action/upload-sarif@v3
 #        with:
