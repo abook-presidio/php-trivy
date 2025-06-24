@@ -18,7 +18,7 @@ jobs:
         run: cd $SCAN_PATH && docker build . --tag "docker-tag"
 
   job2:
-    uses: abook-presidio/php-trivy/.github/workflows/trivy.yml@onAction
+    uses: abook-presidio/php-trivy/.github/workflows/trivy.yml@oneAction
 
   job3:
     uses: abook-presidio/php-trivy/.github/workflows/php-stan.yml@oneAction
