@@ -2,7 +2,7 @@ name: Call multiple workflows from seperate files
 
   on:
     push:
-      branches: [main,oneAction]
+      branches: [oneAction]
     pull_request:
 
 jobs:
