@@ -24,4 +24,4 @@ jobs:
 
       - name: Run PHPStan on /php directory
         run: |
-          ./phpstan.phar analyse php/* --level=5
+          ./phpstan.phar analyse php/* --level=5 --output=github
