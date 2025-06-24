@@ -1,6 +1,4 @@
 name: PHPStan Static Analysis
-  env: 
-    SCAN_PATH: "."
 on:
   push:
     branches: [main]
