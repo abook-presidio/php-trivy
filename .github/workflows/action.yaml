@@ -5,6 +5,10 @@ on:
     branches: [oneAction]
   pull_request:
 
+permissions:
+  actions: read
+  security-events: write
+
 jobs:
   job1:
     runs-on: ubuntu-latest
