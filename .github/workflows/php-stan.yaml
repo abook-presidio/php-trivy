@@ -1,5 +1,5 @@
 name: PHPStan Static Analysis
-
+  env: SCAN_PATH: "."
 on:
   push:
     branches: [main]
@@ -14,6 +14,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: show current directories 
+        run: cd $SCAN_PATH && ls -lah 
+
       - name: Download PHPStan PHAR
         run: |
           curl -Ls -o phpstan.phar https://github.com/phpstan/phpstan/releases/latest/download/phpstan.phar
@@ -21,4 +24,4 @@ jobs:
 
       - name: Run PHPStan on /php directory
         run: |
-          ./phpstan.phar analyse /php --level=5
+          ./phpstan.phar analyse $SCAN_PATH /php --level=5
