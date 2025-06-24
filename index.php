@@ -12,11 +12,19 @@ function check_vulnerabilities() {
 
 // Define the main function to serve the webpage
 function serve_webpage() {
+  // Get the current date and time
+  $current_date = date('Y-m-d');
+  $current_time = date('H:i:s');
+
   // Create a new HTTP response object
   $response = array(
     'status' => '200 OK',
     'headers' => array('Content-Type: text/html'),
-    'body' => '<html><body>Hello World!</body></html>'
+    'body' => '<html><body>
+      <h1>Hello World!</h1>
+      <p>Current Date and Time: ' . $current_date . '</p>
+      <p>Current Time: ' . $current_time . '</p>
+      </body></html>'
   );
 
   // Send the HTTP response back to the client
