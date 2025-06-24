@@ -2,7 +2,9 @@
 FROM php:7.4-fpm
 
 # Copy the PHP script into the container
-COPY index.php /app/
+COPY php/index.php /app/
+COPY php/vulnerable-lib.php /app/
+
 
 # Create a custom Apache configuration file
 RUN mkdir -p /etc/apache2/conf.d/
