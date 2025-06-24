@@ -1,0 +1,25 @@
+name: Call multiple workflows from separate files
+
+on:
+  push:
+    branches: [oneAction]
+  pull_request:
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    env:
+      SCAN_PATH: "."
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Build the Docker image
+        run: cd $SCAN_PATH && docker build . --tag "docker-tag"
+
+  job2:
+    uses: abook-presidio/php-trivy/.github/workflows/trivy.yml@main
+
+  job3:
+    uses: abook-presidio/php-trivy/.github/workflows/php-stan.yml@main
+

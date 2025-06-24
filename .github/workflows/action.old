@@ -22,4 +22,4 @@ jobs:
     uses: abook-presidio/php-trivy/.github/workflows/trivy.yml
 
   job3:
-    uses: abook-presidio/php-trivy/.gitbub/workflows/php-stan.yml
+    uses: abook-presidio/php-trivy/.github/workflows/php-stan.yml
