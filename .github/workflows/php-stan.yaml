@@ -15,7 +15,7 @@ jobs:
 
       - name: show current directories 
         # run: cd $SCAN_PATH && ls -lah 
-        run: cd $SCAN_PATH && ls -lah 
+        run: ls -lah 
 
       - name: Download PHPStan PHAR
         run: |
