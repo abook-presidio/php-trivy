@@ -1,6 +1,6 @@
 # Use official PHP with Apache
 FROM php:8.2-apache
-LABEL org.opencontainers.image.authors="WebTech Administrators <webtech@iu.edu>"
+LABEL org.opencontainers.image.authors="WebTech Administrators"
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -86,12 +86,12 @@ RUN a2enmod rewrite
 WORKDIR /var/www/html
 
 # Copy shared configuration files
-COPY shared/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+#COPY shared/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 COPY shared/apache2.conf /etc/apache2/apache2.conf
-COPY shared/modules.conf /etc/apache2/conf-enabled/modules.conf
-COPY shared/auth_cas_prod.conf /etc/apache2/conf-available/auth_cas_prod.conf
-COPY shared/auth_cas_stage.conf /etc/apache2/conf-available/auth_cas_stage.conf
-COPY shared/auth_cas_test.conf /etc/apache2/conf-available/auth_cas_test.conf
+#COPY shared/modules.conf /etc/apache2/conf-enabled/modules.conf
+#COPY shared/auth_cas_prod.conf /etc/apache2/conf-available/auth_cas_prod.conf
+#COPY shared/auth_cas_stage.conf /etc/apache2/conf-available/auth_cas_stage.conf
+#COPY shared/auth_cas_test.conf /etc/apache2/conf-available/auth_cas_test.conf
 
 # Make /tmp/mod_auth_cas/ directory
 RUN mkdir -p /tmp/mod_auth_cas/
@@ -100,13 +100,13 @@ RUN chmod -R 755 /tmp/mod_auth_cas/
 
 # Copy 404 page to error-pages directory (outside /var/www/html to avoid network mount issues)
 RUN mkdir -p /etc/apache2/custom-error-pages/
-COPY shared/404-not-found.html /etc/apache2/custom-error-pages/404.html
+#COPY shared/404-not-found.html /etc/apache2/custom-error-pages/404.html
 
 # Add health check
-COPY shared/health-check.sh /health-check.sh
-RUN chmod +x /health-check.sh
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD /bin/sh -c /health-check.sh
+#COPY shared/health-check.sh /health-check.sh
+#RUN chmod +x /health-check.sh
+#HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+#    CMD /bin/sh -c /health-check.sh
 
 # Start Apache
 CMD ["apache2-foreground"]
