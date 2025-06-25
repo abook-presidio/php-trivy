@@ -100,7 +100,7 @@ RUN chmod -R 755 /tmp/mod_auth_cas/
 
 # Copy 404 page to error-pages directory (outside /var/www/html to avoid network mount issues)
 RUN mkdir -p /etc/apache2/custom-error-pages/
-#COPY shared/404-not-found.html /etc/apache2/custom-error-pages/404.html
+##COPY shared/404-not-found.html /etc/apache2/custom-error-pages/404.html
 
 # Add health check
 #COPY shared/health-check.sh /health-check.sh
