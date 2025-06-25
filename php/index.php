@@ -1,9 +1,12 @@
 <?php
-
+// define vunlerable_lib function
+class VulnerableLib {
+  function some_function() {}
+}
 // Define a function to check for vulnerabilities
 function check_vulnerabilities() {
   // Include the vulnerable library (in this case, a fictional one called "vulnerable-lib")
-  include 'vulnerable-lib.php';
+//  include 'vulnerable-lib.php';
 
   // Trigger an error in the vulnerable library
   $vulnerable_lib = new VulnerableLib();
