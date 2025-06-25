@@ -25,4 +25,10 @@ jobs:
 
       - name: Run PHPStan on /php directory
         run: |
-          ./phpstan.phar analyse php/* --level=5 --error-format=github
+          ./phpstan.phar analyse php/* --level=5 --error-format=sarif > phpstan-results.sarif
+
+      - name: Upload analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: phpstan-results.sarif
+          wait-for-processing: true
