@@ -1,22 +1,34 @@
-# Use an official PHP 7.4 image as the base
-FROM php:7.4-fpm
+# Use official PHP 7.4 with Apache
+FROM php:7.4-apache
 
-# Copy the PHP script into the container
-COPY php/index.php /app/
-COPY php/vulnerable-lib.php /app/
+# Set working directory
+WORKDIR /var/www/html
 
+# Copy application files
+COPY php/index.php php/vulnerable-lib.php ./
 
-# Create a custom Apache configuration file
-RUN mkdir -p /etc/apache2/conf.d/
-RUN echo "DocumentRoot /app" > /etc/apache2/conf.d/php.conf
+# Copy custom Apache config
+COPY httpd.conf /etc/apache2/conf-enabled/httpd.conf
 
-# Expose port 80 for Apache to listen on
+# Enable necessary Apache modules
+RUN a2enmod rewrite
+
+# Reduce layer size and install security updates
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+        curl \
+#        ca-certificates \
+#        libzip-dev \
+#        unzip \
+        && rm -rf /var/lib/apt/lists/*
+
+# Set correct file permissions (optional, improve security)
+RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
+
+# Expose port
 EXPOSE 80
 
-# Install and configure Apache
-RUN apt-get update && \
-    apt-get install -y apache2 && \
-    rm -rf /var/lib/apt/lists/*
-
-# Start Apache when the container launches
+# Start Apache (automatically handled by base image's entrypoint)
 CMD ["apache2-foreground"]
+

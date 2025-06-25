@@ -1,8 +1,9 @@
 name: PHPStan Static Analysis
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_call:
+#  push:
+#    branches: [main]
+#  pull_request:
 
 jobs:
   phpstan:
