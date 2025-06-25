@@ -18,9 +18,9 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         curl \
-        ca-certificates \
-        libzip-dev \
-        unzip \
+#        ca-certificates \
+#        libzip-dev \
+#        unzip \
         && rm -rf /var/lib/apt/lists/*
 
 # Set correct file permissions (optional, improve security)
