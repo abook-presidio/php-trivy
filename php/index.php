@@ -1,7 +1,10 @@
 <?php
 // define vunlerable_lib function
 class VulnerableLib {
-  function some_function() {}
+  function some_function() {
+    // Simulate vulnerability check
+    error_log("VulnerableLib::some_function() called");
+  }
 }
 // Define a function to check for vulnerabilities
 function check_vulnerabilities() {
